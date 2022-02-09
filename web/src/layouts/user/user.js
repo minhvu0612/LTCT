@@ -80,7 +80,15 @@ function User(){
                     setExit("disable");
                 }} />
                 <div className='menu--setting'>
-                    <button onClick={() => {window.location.href = "update-user"}}>Setting</button>
+                    {
+                        (localStorage.getItem("role") == "user")?(
+                            <button className='user--btn current--btn' onClick={() => {window.location.href = "/home-user"}}>Home</button>
+                        ):
+                        (
+                            <button className='user--btn current--btn' onClick={() => {window.location.href = "/home-admin"}}>Home</button>
+                        )
+                    }
+                    <button className='user--btn' onClick={() => {window.location.href = "/update-user"}}>Setting</button>
                     <button onClick={() => {localStorage.clear(); window.location.href = "/"}}>Logout</button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { get_allusers, get_user } from "../../api/admin";
+import { active, block, get_allusers, get_user, inactive } from "../../api/admin";
 import title from './../../assets/icon/setting.png';
 import menu from './../../assets/icon/icon1.png';
 import exit from './../../assets/icon/icon2.png';
@@ -28,6 +28,40 @@ function Admin(){
         )
     }, []);
 
+
+    const Active = async (id) => {
+      await active(id).then(
+        async (res) => {
+          await get_allusers()
+          .then(
+            (res1) => setAllUser(res1.data.data)
+          )
+        }
+      )
+    }
+
+    const Inactive = async (id) => {
+      await inactive(id).then(
+        async (res) => {
+          await get_allusers()
+          .then(
+            (res1) => setAllUser(res1.data.data)
+          )
+        }
+      )
+    }
+
+    const Block = async (id) => {
+      await block(id).then(
+        async (res) => {
+          await get_allusers()
+          .then(
+            (res1) => setAllUser(res1.data.data)
+          )
+        }
+      )
+    }
+
     const SearchUser = async (e) => {
         if (value != null && value != ""){
             setSearch("search_user");
@@ -54,19 +88,19 @@ function Admin(){
                     <td> {e.telephone}</td>
                     <td className="text-danger"> active</td>
                     <td>
-                      <button type="button" class="btn btn-inactive">
+                      <button type="button" class="btn btn-inactive" onClick={() => Inactive(e._id)}>
                         inactive
                       </button>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-block">
+                      <button type="button" class="btn btn-block" onClick={() => Block(e._id)}>
                         block
                       </button>
                     </td>
                   </tr>
             );
         }
-        else{
+        else if(e.status == "inactive"){
           return (
               <tr>
                 <td> {e._id}</td>
@@ -76,17 +110,34 @@ function Admin(){
                 <td> {e.telephone}</td>
                 <td className="text-success"> inactive</td>
                 <td>
-                  <button type="button" class="btn btn-active">
+                  <button type="button" class="btn btn-active" onClick={() => Active(e._id)}>
                     active
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-block">
+                  <button type="button" class="btn btn-block" onClick={() => Block(e._id)}>
                     block
                   </button>
                 </td>
               </tr>
             );
+        }
+        else{
+          return (
+            <tr>
+              <td> {e._id}</td>
+              <td> {e.username}</td>
+              <td> {e.email} </td>
+              <td> {e.gender}</td>
+              <td> {e.telephone}</td>
+              <td className="text-success"> blocked</td>
+              <td>
+                <button type="button" class="btn btn-active" onClick={() => Active(e._id)}>
+                  active
+                </button>
+              </td>
+            </tr>
+          );
         }
     }
 
@@ -106,14 +157,14 @@ function Admin(){
                       </button>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-block">
+                      <button type="button" class="btn btn-block" onClick={() => Block(e._id)}>
                         block
                       </button>
                     </td>
                   </tr>
             );
         }
-        else{
+        else if (e.status == "inactive"){
           return (
               <tr>
                 <td> {e._id}</td>
@@ -128,14 +179,33 @@ function Admin(){
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-block">
+                  <button type="button" class="btn btn-block" onClick={() => Block(e._id)}>
                     block
                   </button>
                 </td>
               </tr>
             );
         }
+        else{
+          return (
+            <tr>
+              <td> {e._id}</td>
+              <td> {e.username}</td>
+              <td> {e.email} </td>
+              <td> {e.gender}</td>
+              <td> {e.telephone}</td>
+              <td className="text-success"> blocked</td>
+              <td>
+                <button type="button" class="btn btn-active" onClick={() => Active(e._id)}>
+                  active
+                </button>
+              </td>
+            </tr>
+          );
+        }
     }
+
+    
 
     return(
         <div className="admin">
@@ -157,7 +227,8 @@ function Admin(){
                         setExit("disable");
                     }} />
                     <div className='menu--setting'>
-                        <button onClick={() => {window.location.href = "update-user"}}>Setting</button>
+                        <button className='admin--btn' onClick={() => {window.location.href = "/home-admin"}}>Home</button>
+                        <button className='admin--btn' onClick={() => {window.location.href = "update-user"}}>Setting</button>
                         <button onClick={() => {localStorage.clear(); window.location.href = "/"}}>Logout</button>
                     </div>
                 </div>
