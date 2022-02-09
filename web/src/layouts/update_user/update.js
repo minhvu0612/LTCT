@@ -43,6 +43,7 @@ function Update(){
             async (res) => {
                 if (res.data.status == 200){
                     setLocal(data);
+                    localStorage.setItem("telephone", phone);
                     window.location.href = "/home-user";
                 }
             }
